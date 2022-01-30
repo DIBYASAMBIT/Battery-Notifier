@@ -33,20 +33,24 @@ function Show-Notification {
 While(1)
 {
 
-    
-    $charge = Get-CimInstance -ClassName Win32_Battery | Select-Object -ExpandProperty EstimatedChargeRemaining
-    $threshold = 85
-    
-    if ( $charge -gt $threshold )
+    if([BOOL](Get-WmiObject -Class BatteryStatus -Namespace root\wmi).PowerOnLine)
     {
+
+        $charge = Get-CimInstance -ClassName Win32_Battery | Select-Object -ExpandProperty EstimatedChargeRemaining
+        $threshold = 85
+    
+        if ( $charge -gt $threshold )
+        {
         
     
-        Show-Notification -ToastTitle "Unplug A/C Charger" -ToastText "The Battery % is $charge% above $threshold%"
-        Start-Sleep -s 300
-        continue
+            Show-Notification -ToastTitle "Unplug A/C Charger" -ToastText "The Battery % is $charge% above $threshold%"
+            Start-Sleep -s 300
+            continue
 
         
-    }
+        }
 
-    Start-Sleep -s 300
+        Start-Sleep -s 300
+
+    }
 }
